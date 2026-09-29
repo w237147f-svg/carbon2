@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
   <style>
-    /* 画面いっぱいに表示するための設定 */
     body {
       margin: 0;
       padding: 0;
@@ -17,11 +16,12 @@
       height: 100vh;
     }
     
-    /* 💡追加：オリジナルのアイコンを表示するための設定 */
+    /* アイコンの設定 */
     .light-icon {
-      width: 40px;  /* アイコンの横幅（好みに合わせて変更可能） */
-      height: 40px; /* アイコンの縦幅 */
-      background-image: url('icon.png'); /* アイコン画像のファイル名 */
+      width: 40px;
+      height: 40px;
+      /* ↓ もしファイル名が違う場合はここを書き換えてください */
+      background-image: url('images.png'); 
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
@@ -34,18 +34,17 @@
   <script>
     pannellum.viewer('panorama', {
         "type": "equirectangular",
-        "panorama": "76.jpg", /* パノラマ画像のファイル名 */
+        /* ↓ パノラマ画像の大文字・小文字も確認してください */
+        "panorama": "76.jpg", 
         "autoLoad": true,
         "showZoomCtrl": true,
-        "hotSpotDebug": true, /* 座標を調べるためのデバッグモード（不要になったら false にする） */
-
-        /* 💡追加：ホットスポット（アイコン）の配置設定 */
+        "hotSpotDebug": true, /* 確認用のデバッグモード */
         "hotSpots": [
             {
-                "pitch": 45,        /* 上下の角度（正の数が上、負の数が下） */
-                "yaw": 10,          /* 左右の角度 */
-                "cssClass": "light-icon", /* 先ほどCSSで作成したクラス名を指定 */
-                "text": "蛍光灯です"      /* アイコンにカーソルを合わせたときに出る文字（不要なら削除） */
+                "pitch": 45,
+                "yaw": 10,
+                "cssClass": "light-icon",
+                "text": "蛍光灯"
             }
         ]
     });
