@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>360度パノラマビューアー</title>
+  <title>360度パノラマビューアー - 脱炭素クイズ</title>
   <!-- PannellumのCSSとJavaScriptを読み込む -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
@@ -14,6 +14,7 @@
       padding: 0;
       width: 100%;
       height: 100%;
+      font-family: sans-serif;
     }
     #panorama {
       width: 100vw;
@@ -25,48 +26,168 @@
       width: 50px;
       height: 50px;
       cursor: pointer;
-      
-      /* アイコン画像のファイル名 */
       background-image: url('images.png'); 
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
-      
-      /* 万が一画像が読み込めなかった時のための「赤い丸」 */
       background-color: rgba(255, 0, 0, 0.4); 
       border-radius: 50%;
     }
+
+    /* 💡クイズ用ポップアップ（モーダル）のスタイル */
+    #quiz-modal {
+      display: none; /* 初期状態は非表示 */
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.7); /* 半透明の黒背景 */
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    .quiz-box {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 500px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    .quiz-box h2 {
+      margin-top: 0;
+      color: #2e7d32; /* 環境をイメージした緑 */
+      font-size: 1.2rem;
+    }
+    .choice-btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      font-size: 1rem;
+      color: #333;
+      background-color: #f1f8e9;
+      border: 2px solid #81c784;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: left;
+      transition: background-color 0.2s;
+    }
+    .choice-btn:hover {
+      background-color: #c8e6c9;
+    }
+    #quiz-result {
+      display: none; /* 初期状態は非表示 */
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #ccc;
+    }
+    #quiz-result h3 { margin-top: 0; }
+    .explanation {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #444;
+    }
+    .close-btn {
+      display: block;
+      width: 100px;
+      margin: 20px auto 0;
+      padding: 10px;
+      text-align: center;
+      background-color: #555;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .close-btn:hover { background-color: #333; }
   </style>
 </head>
 <body>
   <!-- パノラマを表示する領域 -->
   <div id="panorama"></div>
   
+  <!-- 💡クイズ画面のHTML -->
+  <div id="quiz-modal">
+    <div class="quiz-box">
+      <h2>💡 脱炭素クイズ（電気編）</h2>
+      <p>家庭の「照明（電気）」に関して、脱炭素（CO2削減）に**最も大きな効果**がある行動は次のうちどれでしょう？</p>
+      
+      <!-- 選択肢エリア -->
+      <div id="quiz-choices">
+        <button class="choice-btn" onclick="checkAnswer(1)">1. 使っている白熱電球をLEDランプに取り替える</button>
+        <button class="choice-btn" onclick="checkAnswer(2)">2. こまめにスイッチを「1秒単位」でオン・オフを繰り返す</button>
+        <button class="choice-btn" onclick="checkAnswer(3)">3. 部屋の照明を、常に一番明るい設定にしておく</button>
+      </div>
+
+      <!-- 結果・解説エリア -->
+      <div id="quiz-result">
+        <h3 id="result-title"></h3>
+        <p class="explanation" id="result-explanation"></p>
+        <button class="close-btn" onclick="closeQuiz()">閉じる</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // Pannellumの起動と設定
     pannellum.viewer('panorama', {
         "type": "equirectangular",
         "panorama": "76.JPG",
         "autoLoad": true,
-        
-        /* ページを開いた直後のカメラの向き */
         "pitch": 20,
         "yaw": 0,
-        
         "showZoomCtrl": true,
-        "hotSpotDebug": true, /* クリックで座標を調べるモード */
+        "hotSpotDebug": true,
         
-        /* ホットスポット（アイコン）の配置 */
         "hotSpots": [
             {
-                /* 💡位置を左上に調整しました */
-                "pitch": 30,    /* 上下の位置（正の数で上へ移動） */
-                "yaw": -80,     /* 左右の位置（マイナスの数で左へ移動） */
+                "pitch": 30,
+                "yaw": -80,
                 "cssClass": "light-icon",
-                "text": "蛍光灯"
+                "text": "クイズに挑戦！",
+                "clickHandlerFunc": openQuiz // アイコンをクリックした時に openQuiz 関数を実行
             }
         ]
     });
+
+    /* 💡クイズ用のJavaScriptプログラム */
+    
+    // クイズ画面を開く処理
+    function openQuiz() {
+      document.getElementById('quiz-modal').style.display = 'flex';
+      // クイズを初期状態に戻す（選択肢を表示、結果を隠す）
+      document.getElementById('quiz-choices').style.display = 'block';
+      document.getElementById('quiz-result').style.display = 'none';
+    }
+
+    // 答え合わせと解説表示の処理
+    function checkAnswer(answerNumber) {
+      document.getElementById('quiz-choices').style.display = 'none'; // 選択肢を隠す
+      const resultArea = document.getElementById('quiz-result');
+      const resultTitle = document.getElementById('result-title');
+      const resultExp = document.getElementById('result-explanation');
+      
+      resultArea.style.display = 'block'; // 結果エリアを表示
+
+      // 1番が正解
+      if (answerNumber === 1) {
+        resultTitle.innerHTML = "<span style='color:#e53935;'>⭕ 大正解！</span>";
+      } else {
+        resultTitle.innerHTML = "❌ 惜しい！正解は「1」です";
+      }
+
+      // 環境省のデータを基にした解説
+      resultExp.innerHTML = 
+        "<strong>正解：白熱電球をLEDランプに取り替える</strong><br><br>" +
+        "環境省のデータ（COOL CHOICE）によると、54Wの白熱電球を9WのLEDランプに交換するだけで、消費電力が約85%も削減されます。<br><br>" +
+        "これにより、1灯あたり年間で<strong>約84kgのCO2削減</strong>につながり、電気代も年間数千円お得になります。<br><br>" +
+        "不要な電気を消すことも大切ですが、生活の快適さを我慢することなく、一度の交換で長く脱炭素に貢献できるLED化は非常に有効なアクションです。";
+    }
+
+    // クイズ画面を閉じる処理
+    function closeQuiz() {
+      document.getElementById('quiz-modal').style.display = 'none';
+    }
   </script>
 </body>
 </html>
