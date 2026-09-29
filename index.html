@@ -7,9 +7,11 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
   <style>
-    body {
+    body, html {
       margin: 0;
       padding: 0;
+      width: 100%;
+      height: 100%;
     }
     #panorama {
       width: 100vw;
@@ -18,14 +20,19 @@
     
     /* アイコンの設定 */
     .light-icon {
-      width: 40px;
-      height: 40px;
-      /* ↓ もしファイル名が違う場合はここを書き換えてください */
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+      
+      /* 画像の指定 */
       background-image: url('images.png'); 
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
-      cursor: pointer;
+      
+      /* 💡テスト用：画像が出ない場合の「赤い丸」 */
+      background-color: rgba(255, 0, 0, 0.4); 
+      border-radius: 50%;
     }
   </style>
 </head>
@@ -34,17 +41,23 @@
   <script>
     pannellum.viewer('panorama', {
         "type": "equirectangular",
-        /* ↓ パノラマ画像の大文字・小文字も確認してください */
-        "panorama": "76.jpg", 
+        "panorama": "76.jpg", /* 大文字・小文字注意（76.JPGかも？） */
         "autoLoad": true,
+        
+        /* 起動時のカメラの向き（少し上向きの正面） */
+        "pitch": 20,
+        "yaw": 0,
+        
         "showZoomCtrl": true,
-        "hotSpotDebug": true, /* 確認用のデバッグモード */
+        "hotSpotDebug": true, /* クリックで座標を確認するモード */
+        
         "hotSpots": [
             {
-                "pitch": 45,
-                "yaw": 10,
+                /* 起動時のカメラの向きと全く同じ場所にアイコンを置く */
+                "pitch": 20,
+                "yaw": 0,
                 "cssClass": "light-icon",
-                "text": "蛍光灯"
+                "text": "蛍光灯アイコン"
             }
         ]
     });
