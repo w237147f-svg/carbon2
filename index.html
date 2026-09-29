@@ -46,22 +46,22 @@
     // Pannellumの起動と設定
     pannellum.viewer('panorama', {
         "type": "equirectangular",
-        "panorama": "76.JPG", /* ← 拡張子を大文字に修正済み！ */
+        "panorama": "76.JPG",
         "autoLoad": true,
         
-        /* ページを開いた直後のカメラの向き（少し上向きの真正面） */
+        /* ページを開いた直後のカメラの向き */
         "pitch": 20,
         "yaw": 0,
         
         "showZoomCtrl": true,
-        "hotSpotDebug": true, /* クリックで座標を調べるモード（完成したら false にします） */
+        "hotSpotDebug": true, /* クリックで座標を調べるモード */
         
         /* ホットスポット（アイコン）の配置 */
         "hotSpots": [
             {
-                /* ひとまずカメラの真正面にアイコンを配置しています */
-                "pitch": 20,
-                "yaw": 0,
+                /* 💡位置を左上に調整しました */
+                "pitch": 30,    /* 上下の位置（正の数で上へ移動） */
+                "yaw": -45,     /* 左右の位置（マイナスの数で左へ移動） */
                 "cssClass": "light-icon",
                 "text": "蛍光灯"
             }
