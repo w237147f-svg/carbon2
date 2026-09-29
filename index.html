@@ -4,9 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>360度パノラマビューアー</title>
+  <!-- PannellumのCSSとJavaScriptを読み込む -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
   <style>
+    /* 画面いっぱいに表示するための設定 */
     body, html {
       margin: 0;
       padding: 0;
@@ -18,46 +20,50 @@
       height: 100vh;
     }
     
-    /* アイコンの設定 */
+    /* オリジナルアイコンの設定 */
     .light-icon {
       width: 50px;
       height: 50px;
       cursor: pointer;
       
-      /* 画像の指定 */
+      /* アイコン画像のファイル名 */
       background-image: url('images.png'); 
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
       
-      /* 💡テスト用：画像が出ない場合の「赤い丸」 */
+      /* 万が一画像が読み込めなかった時のための「赤い丸」 */
       background-color: rgba(255, 0, 0, 0.4); 
       border-radius: 50%;
     }
   </style>
 </head>
 <body>
+  <!-- パノラマを表示する領域 -->
   <div id="panorama"></div>
+  
   <script>
+    // Pannellumの起動と設定
     pannellum.viewer('panorama', {
         "type": "equirectangular",
-        "panorama": "76.jpg", /* 大文字・小文字注意（76.JPGかも？） */
+        "panorama": "76.JPG", /* ← 拡張子を大文字に修正済み！ */
         "autoLoad": true,
         
-        /* 起動時のカメラの向き（少し上向きの正面） */
+        /* ページを開いた直後のカメラの向き（少し上向きの真正面） */
         "pitch": 20,
         "yaw": 0,
         
         "showZoomCtrl": true,
-        "hotSpotDebug": true, /* クリックで座標を確認するモード */
+        "hotSpotDebug": true, /* クリックで座標を調べるモード（完成したら false にします） */
         
+        /* ホットスポット（アイコン）の配置 */
         "hotSpots": [
             {
-                /* 起動時のカメラの向きと全く同じ場所にアイコンを置く */
+                /* ひとまずカメラの真正面にアイコンを配置しています */
                 "pitch": 20,
                 "yaw": 0,
                 "cssClass": "light-icon",
-                "text": "蛍光灯アイコン"
+                "text": "蛍光灯"
             }
         ]
     });
