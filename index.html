@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>360度パノラマビューアー</title>
-  <!-- PannellumのCSSとJavaScriptを読み込む -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
   <style>
@@ -17,17 +16,38 @@
       width: 100vw;
       height: 100vh;
     }
+    
+    /* 💡追加：オリジナルのアイコンを表示するための設定 */
+    .light-icon {
+      width: 40px;  /* アイコンの横幅（好みに合わせて変更可能） */
+      height: 40px; /* アイコンの縦幅 */
+      background-image: url('icon.png'); /* アイコン画像のファイル名 */
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
   <div id="panorama"></div>
   <script>
-    // Pannellumの初期化
     pannellum.viewer('panorama', {
         "type": "equirectangular",
-        "panorama": "76.JPG", /* ここに画像ファイル名を設定します */
-        "autoLoad": true,     /* 自動的に画像を読み込みます */
-        "showZoomCtrl": true  /* ズームコントロールを表示します */
+        "panorama": "76.jpg", /* パノラマ画像のファイル名 */
+        "autoLoad": true,
+        "showZoomCtrl": true,
+        "hotSpotDebug": true, /* 座標を調べるためのデバッグモード（不要になったら false にする） */
+
+        /* 💡追加：ホットスポット（アイコン）の配置設定 */
+        "hotSpots": [
+            {
+                "pitch": 45,        /* 上下の角度（正の数が上、負の数が下） */
+                "yaw": 10,          /* 左右の角度 */
+                "cssClass": "light-icon", /* 先ほどCSSで作成したクラス名を指定 */
+                "text": "蛍光灯です"      /* アイコンにカーソルを合わせたときに出る文字（不要なら削除） */
+            }
+        ]
     });
   </script>
 </body>
