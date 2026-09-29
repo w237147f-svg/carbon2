@@ -1,34 +1,34 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>360度パノラマビューアー</title>
-    <!-- PannellumのCSSとJavaScriptを読み込む -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
-    <style>
-        /* 画面いっぱいに表示するための設定 */
-        body {
-            margin: 0;
-            padding: 0;
-        }
-        #panorama {
-            width: 100vw;
-            height: 100vh;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>360度パノラマビューアー</title>
+  <!-- PannellumのCSSとJavaScriptを読み込む -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+  <style>
+    /* 画面いっぱいに表示するための設定 */
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    #panorama {
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
 </head>
 <body>
-    <div id="panorama"></div>
-    <script>
-        // Pannellumの初期化
-        pannellum.viewer('panorama', {
-            "type": "equirectangular",
-            "panorama": "76.JPG", /* ここに画像ファイル名を指定します */
-            "autoLoad": true,     /* 自動的に画像を読み込みます */
-            "showZoomCtrl": true  /* ズームコントロールを表示します */
-        });
-    </script>
+  <div id="panorama"></div>
+  <script>
+    // Pannellumの初期化
+    pannellum.viewer('panorama', {
+        "type": "equirectangular",
+        "panorama": "76.JPG", /* ここに画像ファイル名を設定します */
+        "autoLoad": true,     /* 自動的に画像を読み込みます */
+        "showZoomCtrl": true  /* ズームコントロールを表示します */
+    });
+  </script>
 </body>
 </html>
