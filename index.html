@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>360度パノラマビューアー - 移動＆クイズ機能付き</title>
-  <!-- PannellumのCSSとJavaScriptを読み込む -->
+  <title>360度パノラマビューアー - 移動＆脱炭素クイズ</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
   <style>
@@ -33,8 +32,8 @@
       border-radius: 50%;
     }
 
-    /* クイズ用ポップアップ（モーダル）のスタイル */
-    #quiz-modal {
+    /* クイズ用ポップアップ（モーダル）の共通スタイル */
+    .modal-overlay {
       display: none;
       position: fixed;
       top: 0; left: 0;
@@ -72,13 +71,13 @@
       transition: background-color 0.2s;
     }
     .choice-btn:hover { background-color: #c8e6c9; }
-    #quiz-result {
+    .quiz-result {
       display: none;
       margin-top: 20px;
       padding-top: 20px;
       border-top: 1px solid #ccc;
     }
-    #quiz-result h3 { margin-top: 0; }
+    .quiz-result h3 { margin-top: 0; }
     .explanation {
       font-size: 0.95rem;
       line-height: 1.6;
@@ -103,22 +102,38 @@
   <!-- パノラマを表示する領域 -->
   <div id="panorama"></div>
   
-  <!-- クイズ画面のHTML -->
-  <div id="quiz-modal">
+  <!-- 💡1つ目の部屋：電気に関するクイズ画面 -->
+  <div id="quiz-modal" class="modal-overlay">
     <div class="quiz-box">
       <h2>💡 脱炭素クイズ（電気編）</h2>
-      <p>家庭の「照明（電気）」に関して、脱炭素（CO2削減）に**最も大きな効果**がある行動は次のうちどれでしょう？</p>
-      
+      <p>家庭の「照明（電気）」に関して、脱炭素（CO2削減）に最も大きな効果がある行動は次のうちどれでしょう？</p>
       <div id="quiz-choices">
         <button class="choice-btn" onclick="checkAnswer(1)">1. 使っている白熱電球をLEDランプに取り替える</button>
         <button class="choice-btn" onclick="checkAnswer(2)">2. こまめにスイッチを「1秒単位」でオン・オフを繰り返す</button>
         <button class="choice-btn" onclick="checkAnswer(3)">3. 部屋の照明を、常に一番明るい設定にしておく</button>
       </div>
-
-      <div id="quiz-result">
+      <div id="quiz-result" class="quiz-result">
         <h3 id="result-title"></h3>
         <p class="explanation" id="result-explanation"></p>
         <button class="close-btn" onclick="closeQuiz()">閉じる</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 💡2つ目の部屋：容器に関するクイズ画面 -->
+  <div id="quiz2-modal" class="modal-overlay">
+    <div class="quiz-box">
+      <h2>♻️ 脱炭素クイズ（資源・ごみ編）</h2>
+      <p>カップ麺などの「空のプラスチック容器」を食べ終わった後、脱炭素（CO2削減）につながる最も良い行動は次のうちどれでしょう？</p>
+      <div id="quiz2-choices">
+        <button class="choice-btn" onclick="checkAnswer2(1)">1. そのまま「燃えるごみ」として捨てる</button>
+        <button class="choice-btn" onclick="checkAnswer2(2)">2. 綺麗に洗って「資源ごみ」としてリサイクルに出す</button>
+        <button class="choice-btn" onclick="checkAnswer2(3)">3. 細かく砕いてから「燃えるごみ」として捨てる</button>
+      </div>
+      <div id="quiz2-result" class="quiz-result">
+        <h3 id="result2-title"></h3>
+        <p class="explanation" id="result2-explanation"></p>
+        <button class="close-btn" onclick="closeQuiz2()">閉じる</button>
       </div>
     </div>
   </div>
@@ -127,15 +142,14 @@
     // Pannellumの複数シーン（移動）設定
     pannellum.viewer('panorama', {
         "default": {
-            "firstScene": "room1", // 最初に表示するシーン
-            "sceneFadeDuration": 1000, // 移動時のフェードアニメーションの時間（ミリ秒）
+            "firstScene": "room1",
+            "sceneFadeDuration": 1000,
             "autoLoad": true,
             "showZoomCtrl": true,
-            "hotSpotDebug": true
+            "hotSpotDebug": true /* クリックで座標を調べるモード */
         },
-        
         "scenes": {
-            // 最初の部屋
+            // 最初の部屋（76.JPG）
             "room1": {
                 "type": "equirectangular",
                 "panorama": "76.JPG",
@@ -143,15 +157,13 @@
                 "yaw": 0,
                 "hotSpots": [
                     {
-                        // クイズのアイコン
                         "pitch": 30,
                         "yaw": -45,
                         "cssClass": "light-icon",
-                        "text": "クイズに挑戦！",
+                        "text": "電気のクイズ！",
                         "clickHandlerFunc": openQuiz
                     },
                     {
-                        // 新しい部屋への移動ボタン
                         "pitch": 0,
                         "yaw": 90,
                         "type": "scene",
@@ -161,34 +173,41 @@
                 ]
             },
             
-            // 2つ目の部屋（移動先）
+            // 2つ目の部屋（image2.jpg）
             "room2": {
                 "type": "equirectangular",
-                /* 💡もしGitHub上の画像名が大文字なら、ここを "image2.JPG" に変更してください */
                 "panorama": "image2.jpg", 
                 "pitch": 0,
                 "yaw": 0,
                 "hotSpots": [
                     {
-                        // 最初の部屋に戻るボタン
                         "pitch": 0,
                         "yaw": 180,
                         "type": "scene",
                         "text": "元の部屋に戻る",
                         "sceneId": "room1"
+                    },
+                    {
+                        // 💡新しいクイズアイコンの配置（空の容器用）
+                        // ※実際にご提示いただいた画像内の「空の容器」の位置に合わせて
+                        // pitch（上下）と yaw（左右）の数値を調整してください。
+                        "pitch": -20,
+                        "yaw": 10,
+                        "cssClass": "light-icon",
+                        "text": "空の容器のクイズ！",
+                        "clickHandlerFunc": openQuiz2
                     }
                 ]
             }
         }
     });
 
-    /* クイズ用のJavaScriptプログラム */
+    /* --- 1つ目の部屋（電気編）の処理 --- */
     function openQuiz() {
       document.getElementById('quiz-modal').style.display = 'flex';
       document.getElementById('quiz-choices').style.display = 'block';
       document.getElementById('quiz-result').style.display = 'none';
     }
-
     function checkAnswer(answerNumber) {
       document.getElementById('quiz-choices').style.display = 'none';
       const resultArea = document.getElementById('quiz-result');
@@ -203,13 +222,38 @@
       }
       resultExp.innerHTML = 
         "<strong>正解：白熱電球をLEDランプに取り替える</strong><br><br>" +
-        "環境省のデータ（COOL CHOICE）によると、54Wの白熱電球を9WのLEDランプに交換するだけで、消費電力が約85%も削減されます。<br><br>" +
-        "これにより、1灯あたり年間で<strong>約84kgのCO2削減</strong>につながり、電気代も年間数千円お得になります。<br><br>" +
-        "不要な電気を消すことも大切ですが、生活の快適さを我慢することなく、一度の交換で長く脱炭素に貢献できるLED化は非常に有効なアクションです。";
+        "環境省のデータ（COOL CHOICE）によると、54Wの白熱電球を9WのLEDランプに交換するだけで、消費電力が約85%も削減されます。<br>生活の快適さを我慢することなく、一度の交換で長く脱炭素に貢献できるLED化は非常に有効なアクションです。";
     }
-
     function closeQuiz() {
       document.getElementById('quiz-modal').style.display = 'none';
+    }
+
+    /* --- 2つ目の部屋（容器・資源編）の処理 --- */
+    function openQuiz2() {
+      document.getElementById('quiz2-modal').style.display = 'flex';
+      document.getElementById('quiz2-choices').style.display = 'block';
+      document.getElementById('quiz2-result').style.display = 'none';
+    }
+    function checkAnswer2(answerNumber) {
+      document.getElementById('quiz2-choices').style.display = 'none';
+      const resultArea = document.getElementById('quiz2-result');
+      const resultTitle = document.getElementById('result2-title');
+      const resultExp = document.getElementById('result2-explanation');
+      resultArea.style.display = 'block';
+
+      if (answerNumber === 2) {
+        resultTitle.innerHTML = "<span style='color:#e53935;'>⭕ 大正解！</span>";
+      } else {
+        resultTitle.innerHTML = "❌ 惜しい！正解は「2」です";
+      }
+      // デコ活データベースv.1.1 のデータに基づく解説
+      resultExp.innerHTML = 
+        "<strong>正解：綺麗に洗って「資源ごみ」としてリサイクルに出す</strong><br><br>" +
+        "デコ活データベースによると、使用済みのカップ麺容器（ポリスチレン製）をごみとして廃棄するのではなく、資源ごみとしてリサイクルに出すことで、1個あたり約0.0084kg-CO2eの温室効果ガス削減効果があります。<br><br>" +
+        "ごみはできるだけ減らし、資源としてきちんと分別・再利用することが脱炭素アクションに繋がります。";
+    }
+    function closeQuiz2() {
+      document.getElementById('quiz2-modal').style.display = 'none';
     }
   </script>
 </body>
