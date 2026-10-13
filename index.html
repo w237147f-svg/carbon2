@@ -151,9 +151,9 @@
                         "clickHandlerFunc": openQuiz
                     },
                     {
-                        // 💡新しい部屋への移動ボタン
+                        // 新しい部屋への移動ボタン
                         "pitch": 0,
-                        "yaw": 90, // とりあえず右側に配置しています（後で調整可能）
+                        "yaw": 90,
                         "type": "scene",
                         "text": "次の部屋へ移動",
                         "sceneId": "room2"
@@ -161,17 +161,18 @@
                 ]
             },
             
-            // 💡2つ目の部屋（移動先）
+            // 2つ目の部屋（移動先）
             "room2": {
                 "type": "equirectangular",
-                "panorama": "image2.jpg", // 新しい画像ファイル
+                /* 💡もしGitHub上の画像名が大文字なら、ここを "image2.JPG" に変更してください */
+                "panorama": "image2.jpg", 
                 "pitch": 0,
                 "yaw": 0,
                 "hotSpots": [
                     {
                         // 最初の部屋に戻るボタン
                         "pitch": 0,
-                        "yaw": 180, // 振り返った場所に配置
+                        "yaw": 180,
                         "type": "scene",
                         "text": "元の部屋に戻る",
                         "sceneId": "room1"
