@@ -120,15 +120,15 @@
     </div>
   </div>
 
-  <!-- 💡2つ目の部屋：容器に関するクイズ画面 -->
+  <!-- 💡2つ目の部屋：ペットボトルに関するクイズ画面 -->
   <div id="quiz2-modal" class="modal-overlay">
     <div class="quiz-box">
       <h2>♻️ 脱炭素クイズ（資源・ごみ編）</h2>
-      <p>カップ麺などの「空のプラスチック容器」を食べ終わった後、脱炭素（CO2削減）につながる最も良い行動は次のうちどれでしょう？</p>
+      <p>飲み終わった「空のペットボトル」の捨て方として、脱炭素（CO2削減）につながる行動は次のうちどれでしょう？</p>
       <div id="quiz2-choices">
         <button class="choice-btn" onclick="checkAnswer2(1)">1. そのまま「燃えるごみ」として捨てる</button>
-        <button class="choice-btn" onclick="checkAnswer2(2)">2. 綺麗に洗って「資源ごみ」としてリサイクルに出す</button>
-        <button class="choice-btn" onclick="checkAnswer2(3)">3. 細かく砕いてから「燃えるごみ」として捨てる</button>
+        <button class="choice-btn" onclick="checkAnswer2(2)">2. ラベルとキャップを外し、中をすすいで「資源ごみ」としてリサイクルに出す</button>
+        <button class="choice-btn" onclick="checkAnswer2(3)">3. 細かくつぶして「燃えるごみ」として捨てる</button>
       </div>
       <div id="quiz2-result" class="quiz-result">
         <h3 id="result2-title"></h3>
@@ -149,7 +149,7 @@
             "hotSpotDebug": true /* クリックで座標を調べるモード */
         },
         "scenes": {
-            // 最初の部屋（76.JPG）
+            // 最初の部屋
             "room1": {
                 "type": "equirectangular",
                 "panorama": "76.JPG",
@@ -173,10 +173,10 @@
                 ]
             },
             
-            // 2つ目の部屋（image2.jpg）
+            // 2つ目の部屋
             "room2": {
                 "type": "equirectangular",
-                "panorama": "image2.jpg", 
+                "panorama": "image2.jpg", /* GitHub上で大文字なら image2.JPG にしてください */
                 "pitch": 0,
                 "yaw": 0,
                 "hotSpots": [
@@ -188,13 +188,11 @@
                         "sceneId": "room1"
                     },
                     {
-                        // 💡新しいクイズアイコンの配置（空の容器用）
-                        // ※実際にご提示いただいた画像内の「空の容器」の位置に合わせて
-                        // pitch（上下）と yaw（左右）の数値を調整してください。
-                        "pitch": -20,
+                        // 💡ペットボトルの位置に合わせて座標を調整してください
+                        "pitch": 20,
                         "yaw": 10,
                         "cssClass": "light-icon",
-                        "text": "空の容器のクイズ！",
+                        "text": "ペットボトルのクイズ！",
                         "clickHandlerFunc": openQuiz2
                     }
                 ]
@@ -228,7 +226,7 @@
       document.getElementById('quiz-modal').style.display = 'none';
     }
 
-    /* --- 2つ目の部屋（容器・資源編）の処理 --- */
+    /* --- 2つ目の部屋（ペットボトル編）の処理 --- */
     function openQuiz2() {
       document.getElementById('quiz2-modal').style.display = 'flex';
       document.getElementById('quiz2-choices').style.display = 'block';
@@ -246,11 +244,11 @@
       } else {
         resultTitle.innerHTML = "❌ 惜しい！正解は「2」です";
       }
-      // デコ活データベースv.1.1 のデータに基づく解説
+      // デコ活データベースのデータを基にした解説
       resultExp.innerHTML = 
-        "<strong>正解：綺麗に洗って「資源ごみ」としてリサイクルに出す</strong><br><br>" +
-        "デコ活データベースによると、使用済みのカップ麺容器（ポリスチレン製）をごみとして廃棄するのではなく、資源ごみとしてリサイクルに出すことで、1個あたり約0.0084kg-CO2eの温室効果ガス削減効果があります。<br><br>" +
-        "ごみはできるだけ減らし、資源としてきちんと分別・再利用することが脱炭素アクションに繋がります。";
+        "<strong>正解：ラベルとキャップを外し、中をすすいで「資源ごみ」としてリサイクルに出す</strong><br><br>" +
+        "デコ活データベースによると、ペットボトルをごみとして廃棄するのではなく、「資源ごみ」としてリサイクルに出すことで、1回あたり約0.053kg-CO2eの温室効果ガス削減効果があります。<br><br>" +
+        "💡<strong>さらにワンポイント！</strong><br>ペットボトル飲料を買う代わりに「マイボトル（水筒）」を持参すると、1回あたり約0.105kg-CO2eの削減になり、リサイクルの約2倍も脱炭素に貢献できます！";
     }
     function closeQuiz2() {
       document.getElementById('quiz2-modal').style.display = 'none';
