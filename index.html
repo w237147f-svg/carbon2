@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>360度パノラマビューアー - 脱炭素クイズ</title>
+  <title>360度パノラマビューアー - 移動＆クイズ機能付き</title>
   <!-- PannellumのCSSとJavaScriptを読み込む -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
   <style>
-    /* 画面いっぱいに表示するための設定 */
     body, html {
       margin: 0;
       padding: 0;
@@ -34,13 +33,13 @@
       border-radius: 50%;
     }
 
-    /* 💡クイズ用ポップアップ（モーダル）のスタイル */
+    /* クイズ用ポップアップ（モーダル）のスタイル */
     #quiz-modal {
-      display: none; /* 初期状態は非表示 */
+      display: none;
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background-color: rgba(0, 0, 0, 0.7); /* 半透明の黒背景 */
+      background-color: rgba(0, 0, 0, 0.7);
       z-index: 1000;
       justify-content: center;
       align-items: center;
@@ -55,7 +54,7 @@
     }
     .quiz-box h2 {
       margin-top: 0;
-      color: #2e7d32; /* 環境をイメージした緑 */
+      color: #2e7d32;
       font-size: 1.2rem;
     }
     .choice-btn {
@@ -72,11 +71,9 @@
       text-align: left;
       transition: background-color 0.2s;
     }
-    .choice-btn:hover {
-      background-color: #c8e6c9;
-    }
+    .choice-btn:hover { background-color: #c8e6c9; }
     #quiz-result {
-      display: none; /* 初期状態は非表示 */
+      display: none;
       margin-top: 20px;
       padding-top: 20px;
       border-top: 1px solid #ccc;
@@ -106,20 +103,18 @@
   <!-- パノラマを表示する領域 -->
   <div id="panorama"></div>
   
-  <!-- 💡クイズ画面のHTML -->
+  <!-- クイズ画面のHTML -->
   <div id="quiz-modal">
     <div class="quiz-box">
       <h2>💡 脱炭素クイズ（電気編）</h2>
       <p>家庭の「照明（電気）」に関して、脱炭素（CO2削減）に**最も大きな効果**がある行動は次のうちどれでしょう？</p>
       
-      <!-- 選択肢エリア -->
       <div id="quiz-choices">
         <button class="choice-btn" onclick="checkAnswer(1)">1. 使っている白熱電球をLEDランプに取り替える</button>
         <button class="choice-btn" onclick="checkAnswer(2)">2. こまめにスイッチを「1秒単位」でオン・オフを繰り返す</button>
         <button class="choice-btn" onclick="checkAnswer(3)">3. 部屋の照明を、常に一番明るい設定にしておく</button>
       </div>
 
-      <!-- 結果・解説エリア -->
       <div id="quiz-result">
         <h3 id="result-title"></h3>
         <p class="explanation" id="result-explanation"></p>
@@ -129,54 +124,82 @@
   </div>
 
   <script>
-    // Pannellumの起動と設定
+    // Pannellumの複数シーン（移動）設定
     pannellum.viewer('panorama', {
-        "type": "equirectangular",
-        "panorama": "76.JPG",
-        "autoLoad": true,
-        "pitch": 20,
-        "yaw": 0,
-        "showZoomCtrl": true,
-        "hotSpotDebug": true,
+        "default": {
+            "firstScene": "room1", // 最初に表示するシーン
+            "sceneFadeDuration": 1000, // 移動時のフェードアニメーションの時間（ミリ秒）
+            "autoLoad": true,
+            "showZoomCtrl": true,
+            "hotSpotDebug": true
+        },
         
-        "hotSpots": [
-            {
-                "pitch": 30,
-                "yaw": -80,
-                "cssClass": "light-icon",
-                "text": "クイズに挑戦！",
-                "clickHandlerFunc": openQuiz // アイコンをクリックした時に openQuiz 関数を実行
+        "scenes": {
+            // 最初の部屋
+            "room1": {
+                "type": "equirectangular",
+                "panorama": "76.JPG",
+                "pitch": 20,
+                "yaw": 0,
+                "hotSpots": [
+                    {
+                        // クイズのアイコン
+                        "pitch": 30,
+                        "yaw": -45,
+                        "cssClass": "light-icon",
+                        "text": "クイズに挑戦！",
+                        "clickHandlerFunc": openQuiz
+                    },
+                    {
+                        // 💡新しい部屋への移動ボタン
+                        "pitch": 0,
+                        "yaw": 90, // とりあえず右側に配置しています（後で調整可能）
+                        "type": "scene",
+                        "text": "次の部屋へ移動",
+                        "sceneId": "room2"
+                    }
+                ]
+            },
+            
+            // 💡2つ目の部屋（移動先）
+            "room2": {
+                "type": "equirectangular",
+                "panorama": "image2.jpg", // 新しい画像ファイル
+                "pitch": 0,
+                "yaw": 0,
+                "hotSpots": [
+                    {
+                        // 最初の部屋に戻るボタン
+                        "pitch": 0,
+                        "yaw": 180, // 振り返った場所に配置
+                        "type": "scene",
+                        "text": "元の部屋に戻る",
+                        "sceneId": "room1"
+                    }
+                ]
             }
-        ]
+        }
     });
 
-    /* 💡クイズ用のJavaScriptプログラム */
-    
-    // クイズ画面を開く処理
+    /* クイズ用のJavaScriptプログラム */
     function openQuiz() {
       document.getElementById('quiz-modal').style.display = 'flex';
-      // クイズを初期状態に戻す（選択肢を表示、結果を隠す）
       document.getElementById('quiz-choices').style.display = 'block';
       document.getElementById('quiz-result').style.display = 'none';
     }
 
-    // 答え合わせと解説表示の処理
     function checkAnswer(answerNumber) {
-      document.getElementById('quiz-choices').style.display = 'none'; // 選択肢を隠す
+      document.getElementById('quiz-choices').style.display = 'none';
       const resultArea = document.getElementById('quiz-result');
       const resultTitle = document.getElementById('result-title');
       const resultExp = document.getElementById('result-explanation');
-      
-      resultArea.style.display = 'block'; // 結果エリアを表示
+      resultArea.style.display = 'block';
 
-      // 1番が正解
       if (answerNumber === 1) {
         resultTitle.innerHTML = "<span style='color:#e53935;'>⭕ 大正解！</span>";
       } else {
         resultTitle.innerHTML = "❌ 惜しい！正解は「1」です";
       }
-
-      // 環境省のデータを基にした解説
       resultExp.innerHTML = 
         "<strong>正解：白熱電球をLEDランプに取り替える</strong><br><br>" +
         "環境省のデータ（COOL CHOICE）によると、54Wの白熱電球を9WのLEDランプに交換するだけで、消費電力が約85%も削減されます。<br><br>" +
@@ -184,7 +207,6 @@
         "不要な電気を消すことも大切ですが、生活の快適さを我慢することなく、一度の交換で長く脱炭素に貢献できるLED化は非常に有効なアクションです。";
     }
 
-    // クイズ画面を閉じる処理
     function closeQuiz() {
       document.getElementById('quiz-modal').style.display = 'none';
     }
